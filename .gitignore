@@ -1,0 +1,23 @@
+# Build output
+/target
+**/target
+
+# Cargo lock for libraries (optional, keep if binary)
+# Cargo.lock
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Debug
+*.pdb
+
+# Environment
+.env

@@ -1,0 +1,15 @@
+[package]
+name = "schema-rs-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "JSON Schema runtime core: validation, normalization, effective schema resolution, and dependency tracking"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+indexmap = { workspace = true }
+regex = { workspace = true }
+lru = { workspace = true }
+
+[dev-dependencies]
