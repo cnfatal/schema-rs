@@ -15,5 +15,10 @@ categories.workspace = true
 schema-rs-core = { workspace = true }
 egui = "0.31"
 egui_extras = "0.31"
+eframe = { version = "0.31", optional = true }
 serde_json = { workspace = true }
 rfd = "0.15"
+
+[features]
+default = []
+dialog = ["eframe"]

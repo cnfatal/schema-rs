@@ -3,7 +3,7 @@
 use std::cell::RefCell;
 use std::collections::HashMap;
 
-use schema_rs_core::SchemaRuntime;
+use schema_rs_core::{JsonValue, SchemaRuntime};
 use windows_sys::Win32::Foundation::HWND;
 use windows_sys::Win32::Graphics::Gdi::HFONT;
 use windows_sys::Win32::UI::WindowsAndMessaging::GetDlgCtrlID;
@@ -17,6 +17,8 @@ pub const INDENT: i32 = 20;
 pub const LEFT_MARGIN: i32 = 10;
 pub const RIGHT_MARGIN: i32 = 10;
 pub const ID_CONTROL_BASE: u16 = 1000;
+pub const ID_OK_BUTTON: u16 = 900;
+pub const ID_CANCEL_BUTTON: u16 = 901;
 
 // ── Control tracking ──
 
@@ -38,6 +40,8 @@ pub enum ControlKind {
     RemoveButton,
     BrowseButton,
     TabControl,
+    ConfirmButton,
+    CancelButton,
     #[allow(dead_code)]
     Label,
 }
@@ -56,12 +60,22 @@ pub struct SchemaFormWindow {
     pub hfont: HFONT,
     /// Tracks which tab is selected per node path.
     pub tab_selection: HashMap<String, usize>,
+    /// Whether the user confirmed (clicked OK).
+    pub confirmed: bool,
+}
+
+// ── FormState wrapper ──
+
+pub struct FormState {
+    pub form: SchemaFormWindow,
+    pub runtime: SchemaRuntime,
+    pub on_change: Option<Box<dyn FnMut(&JsonValue)>>,
 }
 
 // ── Thread-local for WndProc ──
 
 thread_local! {
-    pub static FORM_STATE: RefCell<Option<(SchemaFormWindow, SchemaRuntime)>> = const { RefCell::new(None) };
+    pub static FORM_STATE: RefCell<Option<FormState>> = const { RefCell::new(None) };
 }
 
 // ── ID management ──

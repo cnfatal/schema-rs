@@ -15,6 +15,8 @@ pub mod util;
 pub mod wndproc;
 
 #[cfg(target_os = "windows")]
-pub use form::run_schema_form;
+pub use form::run_form;
+#[cfg(target_os = "windows")]
+pub use form::run_form_confirm;
 #[cfg(target_os = "windows")]
 pub use state::SchemaFormWindow;

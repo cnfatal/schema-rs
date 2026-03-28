@@ -2,7 +2,7 @@ use crate::schema::{AdditionalProperties, JsonValue, Schema, SchemaTypeValue};
 use indexmap::IndexMap;
 
 /// Trait for normalizing raw JSON into a Schema.
-pub trait Normalizer {
+pub trait Normalizer: Send {
     fn normalize(&self, schema: &JsonValue) -> Schema;
 }
 

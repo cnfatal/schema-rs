@@ -10,7 +10,7 @@ pub struct ValidatorOptions {
     pub shallow: bool,
 }
 
-pub trait Validator {
+pub trait Validator: Send {
     fn validate(
         &self,
         schema: &Schema,

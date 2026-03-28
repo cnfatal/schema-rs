@@ -26,7 +26,27 @@ pub unsafe extern "system" fn wnd_proc(
         WM_COMMAND => {
             let notify_code = ((wparam >> 16) & 0xFFFF) as u16;
             let ctrl_id = (wparam & 0xFFFF) as u16;
-            handle_command(ctrl_id, notify_code);
+
+            match ctrl_id {
+                ID_OK_BUTTON => {
+                    if notify_code == BN_CLICKED as u16 {
+                        FORM_STATE.with(|cell| {
+                            if let Ok(mut state) = cell.try_borrow_mut() {
+                                if let Some(ref mut s) = *state {
+                                    s.form.confirmed = true;
+                                }
+                            }
+                        });
+                        unsafe { DestroyWindow(hwnd) };
+                    }
+                }
+                ID_CANCEL_BUTTON => {
+                    if notify_code == BN_CLICKED as u16 {
+                        unsafe { DestroyWindow(hwnd) };
+                    }
+                }
+                _ => handle_command(ctrl_id, notify_code),
+            }
             0
         }
         WM_NOTIFY => {
@@ -40,7 +60,7 @@ pub unsafe extern "system" fn wnd_proc(
             let action = (wparam & 0xFFFF) as i32;
             FORM_STATE.with(|cell| {
                 if let Ok(mut state) = cell.try_borrow_mut() {
-                    if let Some((ref mut form, _)) = *state {
+                    if let Some(ref mut s) = *state {
                         let delta = match action {
                             SB_LINEUP => -FIELD_HEIGHT,
                             SB_LINEDOWN => FIELD_HEIGHT,
@@ -48,11 +68,11 @@ pub unsafe extern "system" fn wnd_proc(
                             SB_PAGEDOWN => 200,
                             SB_THUMBPOSITION | SB_THUMBTRACK => {
                                 let pos = ((wparam >> 16) & 0xFFFF) as i32;
-                                pos - form.scroll_y
+                                pos - s.form.scroll_y
                             }
                             _ => 0,
                         };
-                        do_scroll(form, delta);
+                        do_scroll(&mut s.form, delta);
                     }
                 }
             });
@@ -63,8 +83,8 @@ pub unsafe extern "system" fn wnd_proc(
             let scroll = -(wheel_delta as i32) / 3;
             FORM_STATE.with(|cell| {
                 if let Ok(mut state) = cell.try_borrow_mut() {
-                    if let Some((ref mut form, _)) = *state {
-                        do_scroll(form, scroll);
+                    if let Some(ref mut s) = *state {
+                        do_scroll(&mut s.form, scroll);
                     }
                 }
             });
@@ -73,13 +93,13 @@ pub unsafe extern "system" fn wnd_proc(
         WM_SIZE => {
             FORM_STATE.with(|cell| {
                 if let Ok(mut state) = cell.try_borrow_mut() {
-                    if let Some((ref mut form, ref runtime)) = *state {
+                    if let Some(ref mut s) = *state {
                         let new_w = (lparam & 0xFFFF) as i32;
-                        if new_w != form.client_width {
-                            form.client_width = new_w;
-                            rebuild_form(form, runtime);
+                        if new_w != s.form.client_width {
+                            s.form.client_width = new_w;
+                            rebuild_form(&mut s.form, &s.runtime);
                         } else {
-                            update_scrollbar(form);
+                            update_scrollbar(&s.form);
                         }
                     }
                 }
@@ -191,7 +211,7 @@ pub fn handle_control_command(
                 }
             }
         }
-        ControlKind::TabControl | ControlKind::Label => {}
+        ControlKind::TabControl | ControlKind::Label | ControlKind::ConfirmButton | ControlKind::CancelButton => {}
     }
 
     if changed {
@@ -203,13 +223,13 @@ pub fn handle_control_command(
 fn handle_command(ctrl_id: u16, notify_code: u16) {
     FORM_STATE.with(|cell| {
         let Ok(mut state) = cell.try_borrow_mut() else { return };
-        let (form, runtime) = match state.as_mut() {
-            Some(s) => (&mut s.0, &mut s.1),
-            None => return,
-        };
+        let Some(ref mut s) = *state else { return };
 
-        if handle_control_command(form, runtime, ctrl_id, notify_code) {
-            rebuild_form(form, runtime);
+        if handle_control_command(&mut s.form, &mut s.runtime, ctrl_id, notify_code) {
+            if let Some(ref mut cb) = s.on_change {
+                cb(s.runtime.get_root_value());
+            }
+            rebuild_form(&mut s.form, &s.runtime);
         }
     });
 }
@@ -217,18 +237,15 @@ fn handle_command(ctrl_id: u16, notify_code: u16) {
 fn handle_tab_change(ctrl_id: u16) {
     FORM_STATE.with(|cell| {
         let Ok(mut state) = cell.try_borrow_mut() else { return };
-        let (form, runtime) = match state.as_mut() {
-            Some(s) => (&mut s.0, &mut s.1),
-            None => return,
-        };
+        let Some(ref mut s) = *state else { return };
 
-        if let Some(&idx) = form.id_map.get(&ctrl_id) {
-            if form.controls[idx].kind == ControlKind::TabControl {
-                let hwnd_tab = form.controls[idx].hwnd;
-                let path = form.controls[idx].path.clone();
+        if let Some(&idx) = s.form.id_map.get(&ctrl_id) {
+            if s.form.controls[idx].kind == ControlKind::TabControl {
+                let hwnd_tab = s.form.controls[idx].hwnd;
+                let path = s.form.controls[idx].path.clone();
                 let sel = unsafe { SendMessageW(hwnd_tab, TCM_GETCURSEL, 0, 0) } as usize;
-                form.tab_selection.insert(path, sel);
-                rebuild_form(form, runtime);
+                s.form.tab_selection.insert(path, sel);
+                rebuild_form(&mut s.form, &s.runtime);
             }
         }
     });
