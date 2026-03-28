@@ -6,7 +6,22 @@ license.workspace = true
 description = "Interactive playground for schema-rs"
 publish = false
 
+[features]
+default = ["egui"]
+egui = ["schema-rs/egui", "dep:eframe"]
+win32 = ["schema-rs/win32"]
+
 [dependencies]
-schema-rs = { workspace = true, features = ["egui"] }
-eframe = "0.31"
+schema-rs = { workspace = true }
+eframe = { version = "0.31", optional = true }
 serde_json = { workspace = true }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+windows-sys = { version = "0.59", features = [
+    "Win32_Foundation",
+    "Win32_Graphics_Gdi",
+    "Win32_System_Console",
+    "Win32_System_LibraryLoader",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_UI_Controls",
+] }

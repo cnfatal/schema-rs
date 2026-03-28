@@ -4,6 +4,7 @@ members = [
     "crates/schema-rs",
     "crates/schema-rs-core",
     "crates/schema-rs-egui",
+    "crates/schema-rs-win32",
     "examples/playground",
 ]
 
@@ -23,6 +24,7 @@ categories = ["gui", "data-structures"]
 schema-rs = { version = "0.1.0", path = "crates/schema-rs" }
 schema-rs-core = { version = "0.1.0", path = "crates/schema-rs-core" }
 schema-rs-egui = { version = "0.1.0", path = "crates/schema-rs-egui" }
+schema-rs-win32 = { version = "0.1.0", path = "crates/schema-rs-win32" }
 
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }

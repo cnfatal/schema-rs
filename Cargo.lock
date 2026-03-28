@@ -2868,6 +2868,7 @@ version = "0.1.0"
 dependencies = [
  "schema-rs-core",
  "schema-rs-egui",
+ "schema-rs-win32",
 ]
 
 [[package]]
@@ -2899,6 +2900,16 @@ dependencies = [
  "eframe",
  "schema-rs",
  "serde_json",
+ "windows-sys 0.59.0",
+]
+
+[[package]]
+name = "schema-rs-win32"
+version = "0.1.0"
+dependencies = [
+ "schema-rs-core",
+ "serde_json",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]

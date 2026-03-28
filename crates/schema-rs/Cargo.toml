@@ -14,7 +14,9 @@ categories.workspace = true
 [dependencies]
 schema-rs-core = { workspace = true }
 schema-rs-egui = { workspace = true, optional = true }
+schema-rs-win32 = { workspace = true, optional = true }
 
 [features]
 default = ["egui"]
 egui = ["dep:schema-rs-egui"]
+win32 = ["dep:schema-rs-win32"]

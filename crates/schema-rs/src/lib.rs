@@ -10,6 +10,10 @@ pub use schema_rs_core as core;
 /// UI components for `egui`.
 pub use schema_rs_egui as egui;
 
+#[cfg(feature = "win32")]
+/// UI components for native Win32.
+pub use schema_rs_win32 as win32;
+
 // Re-export commonly used types for easier access
 pub mod prelude {
     pub use schema_rs_core::{Schema, SchemaRuntime, ValidationOutput};
