@@ -4,9 +4,9 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 description = "Interactive playground for schema-rs"
+publish = false
 
 [dependencies]
-schema-rs-core = { path = "../../crates/schema-rs-core" }
-schema-rs-egui = { path = "../../crates/schema-rs-egui" }
-eframe = { workspace = true }
+schema-rs = { workspace = true, features = ["egui"] }
+eframe = "0.31"
 serde_json = { workspace = true }

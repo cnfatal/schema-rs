@@ -1,5 +1,5 @@
 [package]
-name = "schema-rs-egui"
+name = "schema-rs"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -7,13 +7,14 @@ repository.workspace = true
 homepage.workspace = true
 documentation.workspace = true
 readme.workspace = true
-description = "JSON Schema form rendering with egui"
+description = "Main entry point for schema-rs, providing schema-driven UI components"
 keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
 schema-rs-core = { workspace = true }
-egui = "0.31"
-egui_extras = "0.31"
-serde_json = { workspace = true }
-rfd = "0.15"
+schema-rs-egui = { workspace = true, optional = true }
+
+[features]
+default = ["egui"]
+egui = ["dep:schema-rs-egui"]

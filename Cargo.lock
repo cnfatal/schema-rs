@@ -2863,6 +2863,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "schema-rs"
+version = "0.1.0"
+dependencies = [
+ "schema-rs-core",
+ "schema-rs-egui",
+]
+
+[[package]]
 name = "schema-rs-core"
 version = "0.1.0"
 dependencies = [
@@ -2889,8 +2897,7 @@ name = "schema-rs-playground"
 version = "0.1.0"
 dependencies = [
  "eframe",
- "schema-rs-core",
- "schema-rs-egui",
+ "schema-rs",
  "serde_json",
 ]
 

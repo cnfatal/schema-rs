@@ -1,6 +1,6 @@
 use eframe::egui;
-use schema_rs_core::{DefaultValidator, SchemaRuntime};
-use schema_rs_egui::{DefaultRenderer, SchemaForm, apply_default_theme};
+use schema_rs::core::{DefaultValidator, SchemaRuntime};
+use schema_rs::egui::{DefaultRenderer, SchemaForm, apply_default_theme};
 use serde_json::{Value, json};
 
 /// Built-in example schemas for the playground.

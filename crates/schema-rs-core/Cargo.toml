@@ -3,13 +3,19 @@ name = "schema-rs-core"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+readme.workspace = true
 description = "JSON Schema runtime core: validation, normalization, effective schema resolution, and dependency tracking"
+keywords.workspace = true
+categories.workspace = true
 
 [dependencies]
 serde = { workspace = true }
 serde_json = { workspace = true }
-indexmap = { workspace = true }
-regex = { workspace = true }
-lru = { workspace = true }
+indexmap = { version = "2", features = ["serde"] }
+regex = "1"
+lru = "0.14"
 
 [dev-dependencies]

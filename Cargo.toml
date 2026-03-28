@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+    "crates/schema-rs",
     "crates/schema-rs-core",
     "crates/schema-rs-egui",
     "examples/playground",
@@ -11,14 +12,17 @@ version = "0.1.0"
 edition = "2024"
 license = "MIT"
 repository = "https://github.com/cnfatal/schema-rs"
+homepage = "https://github.com/cnfatal/schema-rs"
+documentation = "https://docs.rs/schema-rs"
+readme = "README.md"
+description = "A schema-driven native GUI framework"
+keywords = ["json-schema", "egui", "gui-automation", "form-generation"]
+categories = ["gui", "data-structures"]
 
 [workspace.dependencies]
+schema-rs = { version = "0.1.0", path = "crates/schema-rs" }
+schema-rs-core = { version = "0.1.0", path = "crates/schema-rs-core" }
+schema-rs-egui = { version = "0.1.0", path = "crates/schema-rs-egui" }
+
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }
-indexmap = { version = "2", features = ["serde"] }
-regex = "1"
-lru = "0.14"
-egui = "0.31"
-egui_extras = "0.31"
-eframe = "0.31"
-rfd = "0.15"
